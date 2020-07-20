@@ -1,0 +1,56 @@
+## Static configuration
+entryPoints:
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+
+  websecure:
+    address: ":443"
+    http:
+      tls:
+        certResolver: myresolver
+
+api:
+  dashboard: true
+
+providers:
+  ecs:
+    exposedByDefault: true
+    autoDiscoverClusters: false
+    clusters:
+    - YOUR_ECS_CLUSTER_NAME
+    region: YOUR_AWS_REGION
+    accessKeyID: "YOUR_AWS_ACCESS_KEY_ID"
+    secretAccessKey: "YOUR_AWS_SECRET_ACCESS_KEY"
+
+certificatesResolvers:
+  myresolver:
+    # Enable ACME (Let's Encrypt): automatic SSL.
+    acme:
+      email: "YOUR_EMAIL"
+      storage: "acme.json"
+
+      # CA server to use.
+      # Uncomment the line to use Let's Encrypt's staging server,
+      # leave commented to go to prod.
+      #
+      # Optional
+      # Default: "https://acme-v02.api.letsencrypt.org/directory"
+      #
+      # caServer: "https://acme-staging-v02.api.letsencrypt.org/directory"
+      # Use a TLS-ALPN-01 ACME challenge.
+      #
+      # Optional (but recommended)
+      #
+      # tlsChallenge:
+      httpChallenge:
+
+        # EntryPoint to use for the HTTP-01 challenges.
+        #
+        # Required
+        #
+        entryPoint: web
